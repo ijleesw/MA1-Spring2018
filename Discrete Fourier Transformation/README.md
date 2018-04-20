@@ -1,7 +1,8 @@
+
 # Implementation of Discrete Fourier Transformation
 
 
-## 1. How to run
+## 1. How to Run
 
 Compile cpp file with the following command:
 ```bash
@@ -11,7 +12,14 @@ You should pass the degree of polynomial as an argument as below:
 ```bash
 $ ./DFT 64
 ```
-The program automatically reads coefficients of polynomials of corresponding degree from `input.txt`. The following commutative diagram, taken from _Modern Computer Algebra: 1st Edition_, illustrates this:
+The program automatically reads coefficients of two polynomials of corresponding degree from `input.txt` and returns the cyclic convolution of the polynomials. For example,
+```bash
+$ cat input.txt
+1 2 3 4
+5 -6 7 -8
+```
+means _f(x) = 1 + 2x + 3x^2 + 4x^3_ and _g(x) = 5 - 6x + 7x^2 - 8x^3_.
+The following commutative diagram, taken from _Modern Computer Algebra: 1st Edition_, illustrates this:
 
 ![](comm_diagram.png)
 
