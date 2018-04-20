@@ -5,7 +5,7 @@
 
 Compile cpp file with the following command:
 ```bash
-g++ -O3 -o Karatsuba Karatsuba.cpp
+$ g++ -O3 -o Karatsuba Karatsuba.cpp
 ```
 The size of polynomials can be set by modifying the following part of `Karatsuba.cpp`:
 ```c
@@ -14,7 +14,7 @@ The size of polynomials can be set by modifying the following part of `Karatsuba
 ```
 
 
-## 2. Example Result
+## 2. Sample Output
 
 ```bash
 $ ./Karatsuba 
