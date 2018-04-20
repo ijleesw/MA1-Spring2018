@@ -12,7 +12,8 @@ You should pass the degree of polynomial as an argument as below:
 $ ./DFT 64
 ```
 The program automatically reads coefficients of polynomials of corresponding degree from `input.txt`. The following commutative diagram, taken from _Modern Computer Algebra: 1st Edition_, illustrates this:
-![comm_diagram.png](comm_diagram.png){ width=50% }
+
+![comm_diagram.png](comm_diagram.png)
 
 
 ## 2. Sample Output
