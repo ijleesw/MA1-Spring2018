@@ -10,7 +10,7 @@ extern bool verbose;
 
 /************************************************
  *
- *  class polynomial for multivariate monomial
+ *  class monomial for multivariate monomial
  *
  ************************************************/
 
