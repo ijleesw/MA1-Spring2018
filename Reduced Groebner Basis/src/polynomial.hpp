@@ -39,16 +39,16 @@ public:
 
 	void divideby(polynomial& d, polynomial& q, polynomial& r);
 
-	int operator==(polynomial ref);
-	int operator!=(polynomial ref);
+	int operator==(polynomial& ref);
+	int operator!=(polynomial& ref);
 
-	polynomial operator+(polynomial ref);
-	polynomial operator-(polynomial ref);
-	polynomial operator*(polynomial ref);
+	polynomial operator+(polynomial& ref);
+	polynomial operator-(polynomial& ref);
+	polynomial operator*(polynomial& ref);
 	polynomial operator/(monomial& ref);  /* naive division only allowed for monomials */
-	polynomial operator%(polynomial ref);
+	polynomial operator%(polynomial& ref);
 
-	polynomial bar_(vector< polynomial > G);  /* division of (*this) by a set G */
+	polynomial bar_(vector< polynomial >& G);  /* division of (*this) by a set G */
 };
 
 template <typename ring, class monomial>
@@ -59,7 +59,6 @@ static inline ring LC(polynomial<ring, monomial>& f);
 
 template <typename ring, class monomial>
 monomial LM(polynomial<ring, monomial>& f);
-
 
 
 /****************************************
@@ -164,20 +163,21 @@ void polynomial<ring, monomial>::divideby(polynomial& d, polynomial& q, polynomi
 	monomial r_leading = r.terms.LEADING;
 	monomial d_leading = d.terms.LEADING;
 	if (verbose)
-		cout << ">>>> Inside divideby. d = "<<d<<", q = "<<q<<" and r = "<<r<< endl;
+		cout << "    > Entered divideby. a = "<<(*this)<<", d = "<<d<<", q = "<<q<<" and r = "<<r<< endl;
 
 	while (r.isDividedBy(d)) {
-		polynomial multiplier;
+		polynomial multiplier, tmp;
 		monomial mono_mult;
 
 		mono_mult = r_leading/d_leading;
-		if (mono_mult == 0) break;
+		if (mono_mult.coeff == 0) break;
 		multiplier.insert(mono_mult);
 		q.insert(mono_mult);
 
-		r = r - (d * multiplier);
+		tmp = d * multiplier;
+		r = r - tmp;
 		if (verbose)
-			cout << ">>>> Inside divideby. d = "<<d<<", q = "<<q<<" and r = "<<r<< endl;
+			cout << "      > Inside loop of divideby. d = "<<d<<", q = "<<q<<" and r = "<<r<< endl;
 		if (r.is_zero()) break;
 		r_leading = r.terms.LEADING;
 	}
@@ -185,21 +185,21 @@ void polynomial<ring, monomial>::divideby(polynomial& d, polynomial& q, polynomi
 
 
 template <typename ring, class monomial>
-int polynomial<ring, monomial>::operator==(polynomial ref)
+int polynomial<ring, monomial>::operator==(polynomial& ref)
 {
 	return is_same(ref);
 }
 
 
 template <typename ring, class monomial>
-int polynomial<ring, monomial>::operator!=(polynomial ref)
+int polynomial<ring, monomial>::operator!=(polynomial& ref)
 {
 	return !is_same(ref);
 }
 
 
 template <typename ring, class monomial>
-polynomial<ring, monomial> polynomial<ring, monomial>::operator+(polynomial ref)
+polynomial<ring, monomial> polynomial<ring, monomial>::operator+(polynomial& ref)
 {
 	polynomial res;
 	for (auto &iter: terms) res.insert(iter);
@@ -209,7 +209,7 @@ polynomial<ring, monomial> polynomial<ring, monomial>::operator+(polynomial ref)
 
 
 template <typename ring, class monomial>
-polynomial<ring, monomial> polynomial<ring, monomial>::operator-(polynomial ref)
+polynomial<ring, monomial> polynomial<ring, monomial>::operator-(polynomial& ref)
 {
 	polynomial res;
 	for (auto &iter: terms) res.insert(iter);
@@ -219,7 +219,7 @@ polynomial<ring, monomial> polynomial<ring, monomial>::operator-(polynomial ref)
 
 
 template <typename ring, class monomial>
-polynomial<ring, monomial> polynomial<ring, monomial>::operator*(polynomial ref)
+polynomial<ring, monomial> polynomial<ring, monomial>::operator*(polynomial& ref)
 {
 	polynomial res;
 	for (auto &iter_lhs: terms) {
@@ -243,7 +243,7 @@ polynomial<ring, monomial> polynomial<ring, monomial>::operator/(monomial& ref)
 
 
 template <typename ring, class monomial>
-polynomial<ring, monomial> polynomial<ring, monomial>::operator%(polynomial ref)
+polynomial<ring, monomial> polynomial<ring, monomial>::operator%(polynomial& ref)
 {
 	polynomial q, r;
 	divideby(ref, q, r);
@@ -275,13 +275,13 @@ monomial LM(polynomial<ring, monomial>& f)
 
 
 template <typename ring, class monomial>
-polynomial<ring, monomial> polynomial<ring, monomial>::bar_(vector< polynomial > G)
+polynomial<ring, monomial> polynomial<ring, monomial>::bar_(vector< polynomial >& G)
 {
 	int s = G.size();
 	vector< polynomial > Q(G.size());
 
 	if (verbose)
-		cout << ">> Entered bar_(G) of " << (*this) << endl;
+		cout << "  > Entered bar_(G) of " << (*this) << endl;
 
 	polynomial f = (*this);
 	polynomial r, EMPTY;
@@ -290,26 +290,29 @@ polynomial<ring, monomial> polynomial<ring, monomial>::bar_(vector< polynomial >
 	while (f != EMPTY && !(terminate_flag++)) {
 		for (size_t i = 0; i < s; i++) {
 			polynomial LT_f(LT(f)), LT_Gi(LT(G[i]));
-			polynomial tmp_q, tmp_r;
+			polynomial tmp_q, tmp_r, tmp;
 			LT_f.divideby(LT_Gi, tmp_q, tmp_r);
 
 			if (tmp_r == EMPTY) {
 				if (verbose)
-					cout << ">> LT_Gi{"<<LT_Gi<<"} divides LT_f{"<<LT_f<<"} from f{"<<f<<"}" << endl;
+					cout << "  > LT_Gi{"<<LT_Gi<<"} divides LT_f{"<<LT_f<<"} from f{"<<f<<"}" << endl;
 
 				Q[i] = Q[i] + tmp_q;
-				f = f - (tmp_q * G[i]);
+				tmp = tmp_q * G[i];
+				f = f - tmp;
 				r = r + LT_f;
+				if (verbose)
+					cout << "  > tmp_q = "<<tmp_q<<" and G[i] = "<<G[i] << endl;
 
 				if (verbose)
-					cout << ">> New f={"<<f<<"}, New r={"<<r<<"}" << endl << endl;
+					cout << "  > New f={"<<f<<"}, New r={"<<r<<"}" << endl << endl;
 				terminate_flag = 0;
 				break;
 			}
 		}
 	}
 	if (verbose)
-		cout << ">> The result of bar_(G) is " << f << endl << endl;
+		cout << "  > The result of bar_(G) is " << f << endl << endl;
 	return f;
 }
 

@@ -17,7 +17,7 @@ The program computes reduced Gröbner basis for a given set of polynomials. You 
 
 
 
-There are only two cases available in `main.cpp`: Case #1 with _{x^3 - x, x^2 - y}_ and Case #2 with _{x^2y^2 + xy, y^4 - y^2}_.
+There are a few cases available in `main.cpp`. You should see the code to check available cases. For example, Case 3 is [Enneper space](https://en.wikipedia.org/wiki/Enneper_surface) with _u > v > x > y > z_.
 
 
 
@@ -46,15 +46,22 @@ The followings are some functions in `groebner.cpp` that are used to compute red
 ## 3. Sample Output
 
 ```bash
-$ ./groebner 1
-a = ( 1 x^3 ) + ( -1 x^1 )
-b = ( 1 x^2 ) + ( -1 y^1 )
+$ ./groebner 4
+a = ( 1 t^3 ) + ( -1 z^1 )
+b = ( 1 t^2 ) + ( -1 y^1 )
+c = ( 1 t^1 ) + ( -1 x^1 )
 
-S-polynomial(a,b) = ( 1 x^1 y^1 ) + ( -1 x^1 )
-
-Groebner basis of F={a, b} :
- ( 1 x^2 ) + ( -1 y^1 )
- ( 1 x^1 y^1 ) + ( -1 x^1 )
- ( 1 y^2 ) + ( -1 y^1 )
+Epoch : 1
+  Sub Epoch : 1
+  Sub Epoch : 2
+Epoch : 2
+  Sub Epoch : 1
+  Sub Epoch : 2
+  Sub Epoch : 3
+  Sub Epoch : 4
+Groebner basis of F={a, b} (size = 3) :
+ ( 1 t^1 ) + ( -1 x^1 )
+ ( 1 z^1 ) + ( -1 x^3 )
+ ( 1 y^1 ) + ( -1 x^2 )
 ```
 

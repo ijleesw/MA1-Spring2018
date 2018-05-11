@@ -10,7 +10,7 @@ extern bool verbose;
 
 /************************************************
  *
- *  class monomial for multivariate monomial
+ *  class polynomial for multivariate monomial
  *
  ************************************************/
 
@@ -26,8 +26,8 @@ public:
 
 	monomial();
 
-	monomial(ring _coeff, vector<int> _deg);
-	monomial(ring _coeff, ring* _deg);
+	monomial(ring _coeff, vector<int>& _deg);
+	monomial(ring _coeff, ring*& _deg);
 	~monomial();
 
 	int compareTo(monomial& ref);  /* for lexicographic ordering */
@@ -36,16 +36,16 @@ public:
 	int is_same_deg(monomial& ref);
 	bool isDividedBy(monomial &ref);  /* Professor ORDERED me to use bool here! */
 
-	int operator==(ring c);
-	int operator==(monomial ref);
-	int operator!=(monomial ref);
+	int operator==(ring& c);
+	int operator==(monomial& ref);
+	int operator!=(monomial& ref);
 
-	int operator<(monomial ref);
-	int operator>(monomial ref);
+	int operator<(monomial& ref);
+	int operator>(monomial& ref);
 
-	monomial operator*(ring c);
-	monomial operator*(monomial ref);
-	monomial operator/(monomial ref);
+	monomial operator*(ring& c);
+	monomial operator*(monomial& ref);
+	monomial operator/(monomial& ref);
 };
 
 
@@ -60,7 +60,7 @@ monomial<ring>::monomial() {}
 
 
 template <typename ring>
-monomial<ring>::monomial(ring _coeff, vector<int> _deg)
+monomial<ring>::monomial(ring _coeff, vector<int>& _deg)
 {
 	coeff = _coeff;
 	deg = _deg;
@@ -68,7 +68,7 @@ monomial<ring>::monomial(ring _coeff, vector<int> _deg)
 
 
 template <typename ring>
-monomial<ring>::monomial(ring _coeff, ring* _deg)
+monomial<ring>::monomial(ring _coeff, ring*& _deg)
 {
 	coeff = _coeff;
 	copy(_deg, _deg+N, deg.begin());
@@ -115,7 +115,7 @@ int monomial<ring>::is_same(monomial& ref)
 
 
 template <typename ring>
-int monomial<ring>::operator==(ring c)
+int monomial<ring>::operator==(ring& c)
 {
 	if (coeff != c) return 0;
 	for (auto &iter: deg) {
@@ -126,35 +126,35 @@ int monomial<ring>::operator==(ring c)
 
 
 template <typename ring>
-int monomial<ring>::operator==(monomial ref)
+int monomial<ring>::operator==(monomial& ref)
 {
 	return is_same(ref);
 }
 
 
 template <typename ring>
-int monomial<ring>::operator!=(monomial ref)
+int monomial<ring>::operator!=(monomial& ref)
 {
 	return !is_same(ref);
 }
 
 
 template <typename ring>
-int monomial<ring>::operator<(monomial ref)
+int monomial<ring>::operator<(monomial& ref)
 {
 	return (compareTo(ref) < 0);
 }
 
 
 template <typename ring>
-int monomial<ring>::operator>(monomial ref)
+int monomial<ring>::operator>(monomial& ref)
 {
 	return (compareTo(ref) > 0);
 }
 
 
 template <typename ring>
-monomial<ring> monomial<ring>::operator*(ring c)
+monomial<ring> monomial<ring>::operator*(ring& c)
 {
 	monomial res(coeff*c, deg);
 	return res;
@@ -162,7 +162,7 @@ monomial<ring> monomial<ring>::operator*(ring c)
 
 
 template <typename ring>
-monomial<ring> monomial<ring>::operator*(monomial ref)
+monomial<ring> monomial<ring>::operator*(monomial& ref)
 {
 	ring mult_coeff = 1;
 	vector<int> mult_deg;
@@ -176,7 +176,7 @@ monomial<ring> monomial<ring>::operator*(monomial ref)
 
 
 template <typename ring>
-monomial<ring> monomial<ring>::operator/(monomial ref)
+monomial<ring> monomial<ring>::operator/(monomial& ref)
 {
 	int can_divide = 1;
 	ring div_coeff = coeff;

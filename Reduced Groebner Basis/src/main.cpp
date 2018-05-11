@@ -2,9 +2,9 @@
  * To compile and link, use the following command:
  * $ g++ -O2 -std=c++11 -o groebner main.cpp -lgmp -lgmpxx
  *
- * If you want a monomial with lower degree comes before, use -DREVERSE option.
+ * If you want a monomial with higher degree comes before, use -DREVERSE option.
  */
-#define N 2 	// # of indeterminates
+#define N 5 	// # of indeterminates
 
 #define LEADING front()
 #define SMALLEST back()
@@ -19,7 +19,8 @@
 typedef mpq_class Q;
 using namespace std;
 
-char indeterminates[N] = {'x', 'y'}; 	// array of the name of indeterminates
+char indeterminates[N] = {'u', 'v', 'x', 'y', 'z'}; 	// array of the name of indeterminates
+
 bool verbose = false;
 
 /************************************************
@@ -31,7 +32,9 @@ bool verbose = false;
 int main(int argc, char** argv)
 {
 	vector<Q> input(N);
-	monomial<Q> a1, a2, b1, b2;
+	monomial<Q> a1, a2, a3, a4, b1, b2, b3, b4, c1, c2, c3;
+
+	polynomial< Q, monomial<Q> > a, b, c, d, EMPTY;
 
 	if (argc < 2) {
 		cout << "Input command should be";
@@ -42,6 +45,10 @@ int main(int argc, char** argv)
 	if (argc >=3 && strcmp(argv[2], "-v") == 0) verbose = true;
 
 	switch (atoi(argv[1])) {
+/*
+// Use the following:
+// #define N 2 	// # of indeterminates
+// char indeterminates[N] = {'x', 'y'};
 	case 1:
 		a1.coeff = 1;
 		a1.deg.push_back(3);
@@ -63,6 +70,9 @@ int main(int argc, char** argv)
 		break;
 
 	case 2:
+// Use the following:
+// #define N 2 	// # of indeterminates
+// char indeterminates[N] = {'x', 'y'};
 		a1.coeff = 1;
 		a1.deg.push_back(2);
 		a1.deg.push_back(2);
@@ -80,27 +90,148 @@ int main(int argc, char** argv)
 		b2.deg.push_back(2);
 
 		break;
+*/
+	case 3:
+// Use the following:
+// #define N 5 	// # of indeterminates
+// char indeterminates[N] = {'u', 'v', 'x', 'y', 'z'};
+		a1.coeff = -1;
+		//a1.deg = {0,0,0,1,0};
+		a1.deg = {1,0,0,0,0};
+
+		a2.coeff = "1/3";
+		a2.deg = {3,0,0,0,0};
+
+		a3.coeff = -1;
+		a3.deg = {1,2,0,0,0};
+
+		a4.coeff = 1;
+		a4.deg = {0,0,1,0,0};
+
+		a.insert(a1); a.insert(a2); a.insert(a3); a.insert(a4);
+
+
+		b1.coeff = 1;
+		b1.deg = {0,1,0,0,0};
+
+		b2.coeff = "-1/3";
+		b2.deg = {0,3,0,0,0};
+
+		b3.coeff = 1;
+		b3.deg = {2,1,0,0,0};
+
+		b4.coeff = 1;
+		b4.deg = {0,0,0,1,0};
+
+		b.insert(b1); b.insert(b2); b.insert(b3); b.insert(b4); 
+
+
+		c1.coeff = -1;
+		c1.deg = {2,0,0,0,0};
+
+		c2.coeff = 1;
+		c2.deg = {0,2,0,0,0};
+
+		c3.coeff = 3;
+		c3.deg = {0,0,0,0,1};
+
+		c.insert(c1); c.insert(c2); c.insert(c3); 
+
+		break;
+/*
+	case 4:
+// Use the following:
+// #define N 4 	// # of indeterminates
+// char indeterminates[N] = {'t', 'z', 'y', 'x', 'w'};
+
+		a1.coeff = 1;
+		a1.deg = {3,0,0,0,0};
+
+		a2.coeff = -1;
+		a2.deg = {0,1,0,0,0};
+
+		a.insert(a1); a.insert(a2);
+
+		b1.coeff = 1;
+		b1.deg = {2,0,0,0,0};
+
+		b2.coeff = -1;
+		b2.deg = {0,0,1,0,0};
+
+		b.insert(b1); b.insert(b2);
+
+		c1.coeff = 1;
+		c1.deg = {1,0,0,0,0};
+
+		c2.coeff = -1;
+		c2.deg = {0,0,0,1,0};
+
+		c.insert(c1); c.insert(c2);
+
+		break;
+*/
+	case 5:
+// Use the following:
+// #define N 5 	// # of indeterminates
+// char indeterminates[N] = {'u', 'v', 'x', 'y', 'z'};
+		a1.coeff = 3;
+		//a1.deg = {0,0,0,1,0};
+		a1.deg = {1,0,0,0,0};
+
+		a2.coeff = -1;
+		a2.deg = {3,0,0,0,0};
+
+		a3.coeff = 3;
+		a3.deg = {1,2,0,0,0};
+
+		a4.coeff = -1;
+		a4.deg = {0,0,1,0,0};
+
+		a.insert(a1); a.insert(a2); a.insert(a3); a.insert(a4);
+
+
+		b1.coeff = 3;
+		b1.deg = {0,1,0,0,0};
+
+		b2.coeff = -1;
+		b2.deg = {0,3,0,0,0};
+
+		b3.coeff = 3;
+		b3.deg = {2,1,0,0,0};
+
+		b4.coeff = -1;
+		b4.deg = {0,0,0,1,0};
+
+		b.insert(b1); b.insert(b2); b.insert(b3); b.insert(b4); 
+
+
+		c1.coeff = 3;
+		c1.deg = {2,0,0,0,0};
+
+		c2.coeff = -3;
+		c2.deg = {0,2,0,0,0};
+
+		c3.coeff = -1;
+		c3.deg = {0,0,0,0,1};
+
+		c.insert(c1); c.insert(c2); c.insert(c3); 
+
+		break;
 
 	default:
 		cout << "Invalid case number." << endl;
 		return 0;
 	}
-
-	polynomial< Q, monomial<Q> > a, b, c, d;
-
-	a.insert(a1);
-	a.insert(a2);
 	cout << "a = " << a << endl;
+	cout << "b = " << b << endl;
+	if (c != EMPTY) cout << "c = " << c << endl << endl;
 
-	b.insert(b1);
-	b.insert(b2);
-	cout << "b = " << b << endl << endl;
-
-	cout << "S-polynomial(a,b) = " << S_poly(a, b) << endl << endl;
+	//cout << "S-polynomial(a,b) = " << S_poly(a, b) << endl << endl;
 
 	vector< polynomial< Q, monomial<Q> > > F, G;
 	F.push_back(a);
 	F.push_back(b);
+	F.push_back(c);
 	G = Groebner(F);
 
 /*
@@ -130,7 +261,7 @@ int main(int argc, char** argv)
 	for (auto &iter: G) cout << " " << iter << endl;
 */
 
-	cout << "Groebner basis of F={a, b} : " << endl;
+	cout << "Groebner basis of F={a, b} (size = "<<G.size()<<") : " << endl;
 	for (auto &iter: G) cout << " " << iter << endl;
 	cout << endl;
 

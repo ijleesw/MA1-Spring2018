@@ -10,6 +10,29 @@ using namespace std;
 extern char indeterminates[];
 extern bool verbose;
 
+
+template <typename ring, class monomial>  /* it returns LCM of leading terms */
+monomial LCM(polynomial< ring, monomial >& f, polynomial< ring, monomial >& g);
+
+template <typename ring, class monomial>
+polynomial< ring, monomial> S_poly(polynomial< ring, monomial >& f, polynomial< ring, monomial >& g);
+
+template <typename ring, class monomial>
+void term_reduction(polynomial< ring, monomial >& f, polynomial< ring, monomial >& g);
+
+template <typename ring, class monomial>
+vector < polynomial< ring, monomial > > basis_normalization(vector < polynomial< ring, monomial > >& B);
+
+template <typename ring, class monomial>
+vector < polynomial< ring, monomial > > basis_dropout(vector < polynomial< ring, monomial > >& B);
+
+template <typename ring, class monomial>
+vector < polynomial< ring, monomial > > basis_reduction(vector < polynomial< ring, monomial > >& B);
+
+template <typename ring, class monomial>
+vector < polynomial< ring, monomial > > Groebner(vector < polynomial< ring, monomial > >& F);
+
+
 /************************************************
  *
  *  Functions for computing Groebner basis
@@ -32,11 +55,13 @@ monomial LCM(polynomial< ring, monomial >& f, polynomial< ring, monomial >& g)
 template <typename ring, class monomial>
 polynomial< ring, monomial> S_poly(polynomial< ring, monomial >& f, polynomial< ring, monomial >& g)
 {
-	polynomial< ring, monomial > S, s, t;
+	polynomial< ring, monomial > S, s, t, tmp1, tmp2;
 	polynomial< ring, monomial > l(LCM(f, g));
 	s.insert(l.terms.LEADING/f.terms.LEADING);
 	t.insert(l.terms.LEADING/g.terms.LEADING);
-	S = (s*f - t*g);
+	tmp1 = s*f;
+	tmp2 = t*g;
+	S = tmp1 - tmp2;
 	return S;
 }
 
@@ -54,8 +79,9 @@ void term_reduction(polynomial< ring, monomial >& f, polynomial< ring, monomial 
 		for (auto &iter_f: f.terms) {
 			if (iter_f.isDividedBy(g_leading)) {
 				monomial mono_mult = iter_f/g_leading;
-				polynomial<ring, monomial> multiplier(mono_mult);
-				f = f - (g * multiplier);
+				polynomial<ring, monomial> multiplier(mono_mult), tmp;
+				tmp = g * multiplier;
+				f = f - tmp;
 				is_reduced=1;
 				break;
 			}
@@ -84,7 +110,7 @@ vector < polynomial< ring, monomial > > basis_dropout(vector < polynomial< ring,
 	vector<monomial> tmp;
 	size_t B_size = B.size();
 	int* will_be_dropped = (int*)calloc(B_size, sizeof(int));
-	for (auto iter_B: B) tmp.push_back(LT(iter_B));
+	for (auto &iter_B: B) tmp.push_back(LT(iter_B));
 
 	for (size_t i = 0; i < B_size; i++) {
 		for (size_t j = i+1; j < B_size; j++) {
@@ -124,7 +150,7 @@ vector < polynomial< ring, monomial > > basis_reduction(vector < polynomial< rin
 
 	for (size_t i = 0; i < C_size; i++) {
 		polynomial<ring, monomial> h_i = C[i];
-		for (auto D_elt: D) {
+		for (auto &D_elt: D) {
 			term_reduction(h_i, D_elt);
 		}
 		if (i == C_size-1) D.push_back(h_i);
@@ -139,33 +165,29 @@ template <typename ring, class monomial>
 vector < polynomial< ring, monomial > > Groebner(vector < polynomial< ring, monomial > >& F)
 {
 	polynomial< ring, monomial > EMPTY;
-	vector < polynomial< ring, monomial > > G = F, G_ref;
-	int Epoch=0;
+	vector < polynomial< ring, monomial > > G = F;
+	int epoch=0;
+	int curr_G_size;
 
 	do {
-		if (verbose)
-			cout << "> *************** Groebner Epoch "<<++Epoch<<" ***************" << endl << endl;
-		G_ref = G;
-		for (auto f = G_ref.begin(); f != G_ref.end(); f++) {
-			for (auto g = f; g != G_ref.end(); g++) {
-				if (f == g) continue;
+		cout << "Epoch : " << ++epoch << endl;
+		curr_G_size = G.size();
+		int sub_epoch = 0;
+		for (size_t i = 0; i < curr_G_size-1; i++) {
+			cout << "  Sub Epoch : " << ++sub_epoch << endl;
+			for (size_t j = i+1; j < curr_G_size; j++) {
 				int s_exists = 0;
 
-				polynomial< ring, monomial > s = S_poly(*f, *g);
+				polynomial< ring, monomial > s = S_poly(G[i], G[j]);
 				if (verbose) {
-					cout << "> f is " << *f << endl;
-					cout << "> g is " << *g << endl;
+					cout << "> f is " << G[i] << endl;
+					cout << "> g is " << G[j] << endl;
 					cout << "> S-poly is " << s << endl << endl;
 				}
 				if (s == EMPTY) continue;
 
-				polynomial< ring, monomial > r = s.bar_(G_ref);
+				polynomial< ring, monomial > r = s.bar_(G);
 				if (r == EMPTY) continue;
-				else {
-					for (auto &iter: G) {
-						if (r == iter || r == (EMPTY - iter)) {s_exists = 1; break; }
-					}
-				}
 				if (!s_exists) {
 					if (verbose)
 						cout << "> Newly added : " << r << endl;
@@ -178,10 +200,11 @@ vector < polynomial< ring, monomial > > Groebner(vector < polynomial< ring, mono
 		if (verbose)
 			cout << endl;
 		
-		if (G.size() == G_ref.size()) break;
-		G = basis_reduction(G);
+		if (G.size() == curr_G_size) break;
 
 	} while (1);
+	
+	G = basis_reduction(G);
 
 	return G;
 }
