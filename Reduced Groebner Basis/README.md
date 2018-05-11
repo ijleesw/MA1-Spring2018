@@ -21,6 +21,10 @@ There are a few cases available in `main.cpp`. You should see the code to check 
 
 
 
+If you want a monomial with lower degree comes before, type `$ make reverse` to compile.
+
+
+
 `-v` option was used to debug codes. You can take a glimpse of how I debugged my codes with the option :)
 
 

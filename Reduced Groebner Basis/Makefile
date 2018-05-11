@@ -4,10 +4,13 @@ LIBS = -lgmp -lgmpxx
 TARGET = groebner
 OBJECTS = src/main.cpp
 
-all: $(TARGET)
+all: groebner
 
-$(TARGET): $(OBJECTS)
-	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
+groebner: src/main.cpp src/groebner.hpp src/polynomial.hpp src/monomial.hpp
+	$(CC) $(CFLAGS) -o groebner $(OBJECTS) $(LIBS)
+
+reverse: src/main.cpp src/groebner.hpp src/polynomial.hpp src/monomial.hpp
+	$(CC) $(CFLAGS) -o groebner $(OBJECTS) $(LIBS) -DREVERSE
 
 clean:
 	$(RM) $(TARGET)

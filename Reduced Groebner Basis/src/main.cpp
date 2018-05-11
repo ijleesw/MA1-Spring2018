@@ -1,8 +1,9 @@
 /*
  * To compile and link, use the following command:
- * $ g++ -O2 -std=c++11 -o groebner main.cpp -lgmp -lgmpxx
+ * $ make
  *
- * If you want a monomial with higher degree comes before, use -DREVERSE option.
+ * If you want a monomial with lower degree comes before, use the following command:
+ * $ make reverse
  */
 #define N 5 	// # of indeterminates
 
