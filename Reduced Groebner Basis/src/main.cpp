@@ -142,7 +142,7 @@ int main(int argc, char** argv)
 /*
 	case 4:
 // Use the following:
-// #define N 4 	// # of indeterminates
+// #define N 5 	// # of indeterminates
 // char indeterminates[N] = {'t', 'z', 'y', 'x', 'w'};
 
 		a1.coeff = 1;
@@ -262,7 +262,7 @@ int main(int argc, char** argv)
 	for (auto &iter: G) cout << " " << iter << endl;
 */
 
-	cout << "Groebner basis of F={a, b} (size = "<<G.size()<<") : " << endl;
+	cout << "\nGroebner basis of the ideal (size = "<<G.size()<<") : " << endl;
 	for (auto &iter: G) cout << " " << iter << endl;
 	cout << endl;
 
