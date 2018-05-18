@@ -1,14 +1,14 @@
 #ifndef POLYNOMIAL_HPP_
 #define POLYNOMIAL_HPP_
 
+#define LEADING front()
+#define SMALLEST back()
+
 #include <iostream>
 #include <list>
 #include <vector>
 #include "monomial.hpp"
 using namespace std;
-
-extern char indeterminates[];
-extern bool verbose;
 
 /************************************************
  *
@@ -32,12 +32,14 @@ public:
 	void insert(monomial mono);
 	void neg_insert(monomial mono);
 
+	void clear(void);
+
 	int is_zero();
 	int is_same(polynomial& ref);
 	int is_same_leading_deg(polynomial& ref);
 	int isDividedBy(polynomial& ref);
 
-	void divideby(polynomial& d, polynomial& q, polynomial& r);
+	void divideby(polynomial& d, polynomial& q, polynomial& r);  /* Given d, (*this) = dq + r */
 
 	int operator==(polynomial& ref);
 	int operator!=(polynomial& ref);
@@ -63,7 +65,7 @@ monomial LM(polynomial<ring, monomial>& f);
 
 /****************************************
  *
- * Function definition starts from here
+ *  Function definitions start here
  *
  ****************************************/
 
@@ -118,6 +120,13 @@ void polynomial<ring, monomial>::neg_insert(monomial mono)
 
 
 template <typename ring, class monomial>
+void polynomial<ring, monomial>::clear(void)
+{
+	terms.clear();
+}
+
+
+template <typename ring, class monomial>
 int polynomial<ring, monomial>::is_zero()
 {
 	return terms.empty();
@@ -159,15 +168,17 @@ int polynomial<ring, monomial>::isDividedBy(polynomial& ref)
 template <typename ring, class monomial>
 void polynomial<ring, monomial>::divideby(polynomial& d, polynomial& q, polynomial& r)
 {
+	q.clear();
 	r = (*this);
+
 	monomial r_leading = r.terms.LEADING;
 	monomial d_leading = d.terms.LEADING;
-	if (verbose)
-		cout << "    > Entered divideby. a = "<<(*this)<<", d = "<<d<<", q = "<<q<<" and r = "<<r<< endl;
+
+	polynomial multiplier, tmp;
+	monomial mono_mult;
 
 	while (r.isDividedBy(d)) {
-		polynomial multiplier, tmp;
-		monomial mono_mult;
+		multiplier.clear();
 
 		mono_mult = r_leading/d_leading;
 		if (mono_mult.coeff == 0) break;
@@ -176,8 +187,6 @@ void polynomial<ring, monomial>::divideby(polynomial& d, polynomial& q, polynomi
 
 		tmp = d * multiplier;
 		r = r - tmp;
-		if (verbose)
-			cout << "      > Inside loop of divideby. d = "<<d<<", q = "<<q<<" and r = "<<r<< endl;
 		if (r.is_zero()) break;
 		r_leading = r.terms.LEADING;
 	}
@@ -278,41 +287,28 @@ template <typename ring, class monomial>
 polynomial<ring, monomial> polynomial<ring, monomial>::bar_(vector< polynomial >& G)
 {
 	int s = G.size();
-	vector< polynomial > Q(G.size());
-
-	if (verbose)
-		cout << "  > Entered bar_(G) of " << (*this) << endl;
 
 	polynomial f = (*this);
 	polynomial r, EMPTY;
+	polynomial tmp_q, tmp_r, tmp;
 
 	int terminate_flag=0;
 	while (f != EMPTY && !(terminate_flag++)) {
 		for (size_t i = 0; i < s; i++) {
 			polynomial LT_f(LT(f)), LT_Gi(LT(G[i]));
-			polynomial tmp_q, tmp_r, tmp;
+			tmp_q.clear(); tmp_r.clear(); tmp.clear();
 			LT_f.divideby(LT_Gi, tmp_q, tmp_r);
 
 			if (tmp_r == EMPTY) {
-				if (verbose)
-					cout << "  > LT_Gi{"<<LT_Gi<<"} divides LT_f{"<<LT_f<<"} from f{"<<f<<"}" << endl;
-
 				Q[i] = Q[i] + tmp_q;
 				tmp = tmp_q * G[i];
 				f = f - tmp;
 				r = r + LT_f;
-				if (verbose)
-					cout << "  > tmp_q = "<<tmp_q<<" and G[i] = "<<G[i] << endl;
-
-				if (verbose)
-					cout << "  > New f={"<<f<<"}, New r={"<<r<<"}" << endl << endl;
 				terminate_flag = 0;
 				break;
 			}
 		}
 	}
-	if (verbose)
-		cout << "  > The result of bar_(G) is " << f << endl << endl;
 	return f;
 }
 
@@ -328,8 +324,7 @@ ostream& operator<<(ostream& out, const polynomial< ring, monomial >& m)
 		out << "( " << iter << ")";
 		cnt++;
 	}
-#endif
-#ifdef REVERSE
+#else
 	for (auto iter = m.terms.rbegin(); iter != m.terms.rend(); iter++) {
 		if (cnt >= 1) out << " + ";
 		out << "( " << *iter << ")";
@@ -339,4 +334,4 @@ ostream& operator<<(ostream& out, const polynomial< ring, monomial >& m)
 	return out;
 }
 
-#endif
+#endif  /* POLYNOMIAL_HPP_ */

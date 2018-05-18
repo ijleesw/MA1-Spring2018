@@ -1,15 +1,18 @@
-#ifndef GROEBNER_HPP_
-#define GROEBNER_HPP_
+#ifndef BUCHBERGER_HPP_
+#define BUCHBERGER_HPP_
 
 #include <iostream>
-#include <list>
 #include <vector>
 #include "polynomial.hpp"
 using namespace std;
 
-extern char indeterminates[];
 extern bool verbose;
 
+/************************************************
+ *
+ *  Function declarations for Buchberger Algo.
+ *
+ ************************************************/
 
 template <typename ring, class monomial>  /* it returns LCM of leading terms */
 monomial LCM(polynomial< ring, monomial >& f, polynomial< ring, monomial >& g);
@@ -21,21 +24,21 @@ template <typename ring, class monomial>
 void term_reduction(polynomial< ring, monomial >& f, polynomial< ring, monomial >& g);
 
 template <typename ring, class monomial>
-vector < polynomial< ring, monomial > > basis_normalization(vector < polynomial< ring, monomial > >& B);
+void basis_normalization(vector< polynomial< ring, monomial > >& B);
 
 template <typename ring, class monomial>
-vector < polynomial< ring, monomial > > basis_dropout(vector < polynomial< ring, monomial > >& B);
+void basis_dropout(vector< polynomial< ring, monomial > >& B);
 
 template <typename ring, class monomial>
-vector < polynomial< ring, monomial > > basis_reduction(vector < polynomial< ring, monomial > >& B);
+void basis_reduction(vector< polynomial< ring, monomial > >& B);
 
 template <typename ring, class monomial>
-vector < polynomial< ring, monomial > > Groebner(vector < polynomial< ring, monomial > >& F);
+vector< polynomial< ring, monomial > > Buchberger(vector< polynomial< ring, monomial > >& F);
 
 
 /************************************************
  *
- *  Functions for computing Groebner basis
+ *  Function definitions start here
  *
  ************************************************/
 
@@ -91,25 +94,25 @@ void term_reduction(polynomial< ring, monomial >& f, polynomial< ring, monomial 
 
 
 template <typename ring, class monomial>
-vector < polynomial< ring, monomial > > basis_normalization(vector < polynomial< ring, monomial > >& B)
+void basis_normalization(vector< polynomial< ring, monomial > >& B)
 {
-	vector < polynomial< ring, monomial > > C = B;
-	for (auto &C_elt: C) {
-		ring lc = LC(C_elt);
-		for (auto &iter_terms: C_elt.terms) {
+	for (auto &B_elt: B) {
+		ring lc = LC(B_elt);
+		for (auto &iter_terms: B_elt.terms) {
 			iter_terms.coeff /= lc;
 		}
 	}
-	return C;
 }
 
 
 template <typename ring, class monomial>
-vector < polynomial< ring, monomial > > basis_dropout(vector < polynomial< ring, monomial > >& B)
+void basis_dropout(vector< polynomial< ring, monomial > >& B)
 {
 	vector<monomial> tmp;
 	size_t B_size = B.size();
+	auto B_begin = B.begin();
 	int* will_be_dropped = (int*)calloc(B_size, sizeof(int));
+
 	for (auto &iter_B: B) tmp.push_back(LT(iter_B));
 
 	for (size_t i = 0; i < B_size; i++) {
@@ -125,88 +128,61 @@ vector < polynomial< ring, monomial > > basis_dropout(vector < polynomial< ring,
 		}
 	}
 
-	vector < polynomial< ring, monomial > > C;
-	for (size_t i = 0; i < B_size; i++) {
-		if (!will_be_dropped[i]) C.push_back(B[i]);
+	size_t i = B_size;
+	while (i--) {
+		if (will_be_dropped[i]) B.erase(B_begin+i);
 	}
 	free(will_be_dropped);
-
-	return C;
 }
 
 
 template <typename ring, class monomial>
-vector < polynomial< ring, monomial > > basis_reduction(vector < polynomial< ring, monomial > >& B)
+void basis_reduction(vector< polynomial< ring, monomial > >& B)
 {
-	vector < polynomial< ring, monomial > > C = B;
-	C = basis_normalization(C);
-	C = basis_dropout(C);  /* now C is a minimal Groebner basis */
-
-	vector < polynomial< ring, monomial > > D;
-	size_t C_size = C.size();
-	for (size_t i = 1; i < C_size; i++) {
-		D.push_back(C[i]);
-	}
-
-	for (size_t i = 0; i < C_size; i++) {
-		polynomial<ring, monomial> h_i = C[i];
-		for (auto &D_elt: D) {
-			term_reduction(h_i, D_elt);
+	basis_normalization(B);
+	basis_dropout(B);  /* now B is a minimal Groebner basis */
+	
+	size_t B_size = B.size();
+	for (size_t i = 0; i < B_size; i++) {
+		for (size_t j = 0; j < B_size; j++) {
+			if (i == j) continue;
+			term_reduction(B[i], B[j]);
 		}
-		if (i == C_size-1) D.push_back(h_i);
-		else D[i] = h_i;
 	}
-
-	return D;
 }
 
 
 template <typename ring, class monomial>
-vector < polynomial< ring, monomial > > Groebner(vector < polynomial< ring, monomial > >& F)
+vector< polynomial< ring, monomial > > Buchberger(vector< polynomial< ring, monomial > >& F)
 {
 	polynomial< ring, monomial > EMPTY;
-	vector < polynomial< ring, monomial > > G = F;
+	vector< polynomial< ring, monomial > > G = F;
 	int epoch=0;
 	int curr_G_size;
 
 	do {
-		cout << "Epoch : " << ++epoch << endl;
+		if (verbose)
+			cout << "Epoch : " << ++epoch << endl;
 		curr_G_size = G.size();
 		int sub_epoch = 0;
 		for (size_t i = 0; i < curr_G_size-1; i++) {
-			cout << "  Sub Epoch : " << ++sub_epoch << endl;
+			if (verbose)
+				cout << "  Sub Epoch : " << ++sub_epoch << endl;
 			for (size_t j = i+1; j < curr_G_size; j++) {
 				int s_exists = 0;
 
 				polynomial< ring, monomial > s = S_poly(G[i], G[j]);
-				if (verbose) {
-					cout << "> f is " << G[i] << endl;
-					cout << "> g is " << G[j] << endl;
-					cout << "> S-poly is " << s << endl << endl;
-				}
 				if (s == EMPTY) continue;
 
 				polynomial< ring, monomial > r = s.bar_(G);
 				if (r == EMPTY) continue;
-				if (!s_exists) {
-					if (verbose)
-						cout << "> Newly added : " << r << endl;
-					G.push_back(r);
-				}
-				if (verbose)
-					cout << endl;
+				if (!s_exists) G.push_back(r);
 			}
 		}
-		if (verbose)
-			cout << endl;
-		
-		if (G.size() == curr_G_size) break;
-
-	} while (1);
+	} while (G.size() != curr_G_size);
 	
-	G = basis_reduction(G);
-
+	basis_reduction(G);
 	return G;
 }
 
-#endif
+#endif  /* BUCHBERGER_HPP_ */

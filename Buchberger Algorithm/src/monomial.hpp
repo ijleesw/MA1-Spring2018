@@ -5,12 +5,11 @@
 #include <vector>
 using namespace std;
 
-extern char indeterminates[];
-extern bool verbose;
+extern char indeterminates[]; 	// array of the name of indeterminates
 
 /************************************************
  *
- *  class polynomial for multivariate monomial
+ *  class monomial for multivariate monomial
  *
  ************************************************/
 
@@ -30,7 +29,7 @@ public:
 	monomial(ring _coeff, ring*& _deg);
 	~monomial();
 
-	int compareTo(monomial& ref);  /* for lexicographic ordering */
+	int lexCompareTo(monomial& ref);  /* for lexicographic ordering */
 
 	int is_same(monomial& ref);
 	int is_same_deg(monomial& ref);
@@ -51,7 +50,7 @@ public:
 
 /****************************************
  *
- * Function definition starts from here
+ *  Function definitions start here
  *
  ****************************************/
 
@@ -80,7 +79,7 @@ monomial<ring>::~monomial() {}
 
 
 template <typename ring>
-int monomial<ring>::compareTo(monomial& ref)
+int monomial<ring>::lexCompareTo(monomial& ref)
 {
 	for (size_t i = 0; i < N; i++) {
 		if (deg[i] < ref.deg[i]) return -1;
@@ -91,26 +90,26 @@ int monomial<ring>::compareTo(monomial& ref)
 
 
 template <typename ring>
-bool monomial<ring>::isDividedBy(monomial& ref)
+int monomial<ring>::is_same(monomial& ref)
 {
-	for (size_t i = 0; i < N; i++) {
-		if (deg[i] < ref.deg[i]) return false;
-	}
-	return true;
+	return (lexCompareTo(ref) == 0 && coeff == ref.coeff);		
 }
 
 
 template <typename ring>
 int monomial<ring>::is_same_deg(monomial& ref)
 {
-	return compareTo(ref) == 0;
+	return lexCompareTo(ref) == 0;
 }
 
 
 template <typename ring>
-int monomial<ring>::is_same(monomial& ref)
+bool monomial<ring>::isDividedBy(monomial& ref)
 {
-	return (compareTo(ref) == 0 && coeff == ref.coeff);		
+	for (size_t i = 0; i < N; i++) {
+		if (deg[i] < ref.deg[i]) return false;
+	}
+	return true;
 }
 
 
@@ -142,14 +141,14 @@ int monomial<ring>::operator!=(monomial& ref)
 template <typename ring>
 int monomial<ring>::operator<(monomial& ref)
 {
-	return (compareTo(ref) < 0);
+	return (lexCompareTo(ref) < 0);
 }
 
 
 template <typename ring>
 int monomial<ring>::operator>(monomial& ref)
 {
-	return (compareTo(ref) > 0);
+	return (lexCompareTo(ref) > 0);
 }
 
 
@@ -185,7 +184,7 @@ monomial<ring> monomial<ring>::operator/(monomial& ref)
 	div_coeff /= ref.coeff;
 	for (size_t i = 0; i < N; i++) {
 		div_deg.push_back(deg[i] - ref.deg[i]);
-		if (deg[i] < ref.deg[i]) can_divide = 0;
+		if (deg[i] < ref.deg[i]) { can_divide = 0; break; }
 	}
 	if (!can_divide) {
 		div_coeff = 0;
@@ -206,4 +205,4 @@ ostream& operator<<(ostream& out, const monomial<ring>& m)
 	return out;
 }
 
-#endif
+#endif  /* MONOMIAL_HPP_ */
