@@ -287,6 +287,7 @@ template <typename ring, class monomial>
 polynomial<ring, monomial> polynomial<ring, monomial>::bar_(vector< polynomial >& G)
 {
 	int s = G.size();
+	vector< polynomial > Q(G.size());
 
 	polynomial f = (*this);
 	polynomial r, EMPTY;
