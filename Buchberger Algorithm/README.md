@@ -49,7 +49,7 @@ The followings are some functions in `buchberger.cpp` and `polynomial.hpp` that 
 
    \- `basis_reduction` computes reduced Gröbner basis of given Gröbner basis. `basis_dropout` is included in this function.
 
-   \- `Groebner` computes reduced Gröbner basis of given polynomials (that are generators of an ideal). `basis_reduction` is included in this function.
+   \- `Buchberger` computes reduced Gröbner basis of given polynomials (which are generators of an ideal). `basis_reduction` is included in this function.
 
 
 
