@@ -15,15 +15,15 @@ $ ./autodiff
 
 To calculate the derivative of your favorite function _f_ at some point _a_, namely _f'(a)_, modify the function `f` and the value of `a` in `main.cpp`
 
-Lists of macro(s) and pre-defined functions can be found in `dual.cpp`.
+Lists of macro(s) and pre-defined functions can be found in `dual.hpp`.
 
 
 
 ## 2. Description
 
-_class_ `dual` contains two ring elements: `val` and `deriv`. Every time an operator / function is applied, the result is stored in `val` and the derivative is stored in `deriv`.
+_class_ `dual` contains two ring elements: `val` and `deriv`. Every time an operator or a function is applied, the result is stored in `val` and the derivative is stored in `deriv`.
 
-Apply whatever operator / function you want and get derivative by just checking `deriv`.
+Apply whatever function you want and get derivative by just checking `deriv`.
 
 
 
