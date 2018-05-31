@@ -15,7 +15,7 @@ $ ./autodiff
 
 To calculate the derivative of your favorite function _f_ at some point _a_, namely _f'(a)_, modify the function `f` and the value of `a` in `main.cpp`
 
-Lists of macro(s) and pre-defined functions can be found in `dual.hpp`.
+Lists of macros and pre-defined functions can be found in `dual.hpp`.
 
 
 

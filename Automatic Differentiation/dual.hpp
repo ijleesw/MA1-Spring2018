@@ -8,19 +8,20 @@ using namespace std;
 
 /*****************************************************
  *
- *  Macro(s) and (commented out) function prototypes
+ *  Macros and (commented out) function prototypes
  *
  *****************************************************/
 
 #define X(x) dual<ring>(x)
+#define CONST(x) dual<ring>(x,0)
 /*
 [+, -, *, /] are all overloaded
-dual<ring> exp(dual<ring>& x);
-dual<ring> log(dual<ring>& x);
-dual<ring> pow(dual<ring>& x, dual<ring>& y);
-dual<ring> sin(dual<ring>& x);
-dual<ring> cos(dual<ring>& x);
-dual<ring> sqrt(dual<ring>& x);
+dual<ring> exp(const dual<ring>& x);
+dual<ring> log(const dual<ring>& x);
+dual<ring> pow(const dual<ring>& x, const dual<ring>& y);
+dual<ring> sin(const dual<ring>& x);
+dual<ring> cos(const dual<ring>& x);
+dual<ring> sqrt(const dual<ring>& x);
 */
 
 
@@ -42,16 +43,16 @@ public:
 	dual(ring a, ring b) : val(a), deriv(b) {}
 	~dual() {}
 
-	dual operator+(dual& ref);
-	dual operator+(ring& ref);
-	dual operator-(dual& ref);
-	dual operator-(ring& ref);
-	dual operator*(dual& ref);
-	dual operator*(ring& ref);
-	dual operator/(dual& ref);
-	dual operator/(ring& ref);
+	dual operator+(const dual& ref);
+	dual operator+(const ring& ref);
+	dual operator-(const dual& ref);
+	dual operator-(const ring& ref);
+	dual operator*(const dual& ref);
+	dual operator*(const ring& ref);
+	dual operator/(const dual& ref);
+	dual operator/(const ring& ref);
 
-	dual& operator=(ring& ref);
+	dual& operator=(const ring& ref);
 
 	template <typename T>
 	friend ostream& operator<<(ostream&, const dual<T>&);
@@ -65,48 +66,48 @@ public:
  *****************************************************/
 
 template <typename ring>
-dual<ring> dual<ring>::operator+(dual<ring>& ref)
+dual<ring> dual<ring>::operator+(const dual<ring>& ref)
 {
 	return dual<ring>(val+ref.val, deriv+ref.deriv);
 }
 
 template <typename ring>
-dual<ring> dual<ring>::operator+(ring& ref)
+dual<ring> dual<ring>::operator+(const ring& ref)
 {
 	return dual<ring>(val+ref, deriv);
 }
 
 
 template <typename ring>
-dual<ring> dual<ring>::operator-(dual<ring>& ref)
+dual<ring> dual<ring>::operator-(const dual<ring>& ref)
 {
 	return dual<ring>(val-ref.val, deriv-ref.deriv);
 }
 
 
 template <typename ring>
-dual<ring> dual<ring>::operator-(ring& ref)
+dual<ring> dual<ring>::operator-(const ring& ref)
 {
 	return dual<ring>(val-ref.val, deriv);
 }
 
 
 template <typename ring>
-dual<ring> dual<ring>::operator*(dual<ring>& ref)
+dual<ring> dual<ring>::operator*(const dual<ring>& ref)
 {
 	return dual<ring>(val*ref.val, val*ref.deriv + deriv*ref.val);
 }
 
 
 template <typename ring>
-dual<ring> dual<ring>::operator*(ring& ref)
+dual<ring> dual<ring>::operator*(const ring& ref)
 {
 	return dual<ring>(val*ref.val, deriv*ref.val);
 }
 
 
 template <typename ring>
-dual<ring> dual<ring>::operator/(dual<ring>& ref)
+dual<ring> dual<ring>::operator/(const dual<ring>& ref)
 {
 	if (ref.val == 0) { cout << "Division by zero error.\n"; exit(-1); }
 	return dual<ring>(val/ref.val, (deriv*ref.val - val*ref.deriv) / (ref.val*ref.val));
@@ -114,7 +115,7 @@ dual<ring> dual<ring>::operator/(dual<ring>& ref)
 
 
 template <typename ring>
-dual<ring> dual<ring>::operator/(ring& ref)
+dual<ring> dual<ring>::operator/(const ring& ref)
 {
 	if (ref.val == 0) { cout << "Division by zero error.\n"; exit(-1); }
 	return dual<ring>(val/ref.val, deriv.ref.val);
@@ -122,7 +123,7 @@ dual<ring> dual<ring>::operator/(ring& ref)
 
 
 template <typename ring>
-dual<ring>& dual<ring>::operator=(ring& ref)
+dual<ring>& dual<ring>::operator=(const ring& ref)
 {
 	val = ref; deriv = 1;
 	return *this;
@@ -144,43 +145,42 @@ ostream& operator<<(ostream& out, const dual<ring>& x)
  *****************************************************/
 
 template <typename ring>
-dual<ring> exp(dual<ring>& x)
+dual<ring> exp(const dual<ring>& x)
 {
 	return dual<ring>(exp(x.val), exp(x.val)*x.deriv);
 }
 
 
 template <typename ring>
-dual<ring> log(dual<ring>& x)
+dual<ring> log(const dual<ring>& x)
 {
 	return dual<ring>(log(x.val), (1/x.val)*x.deriv);
 }
 
 
 template <typename ring>
-dual<ring> pow(dual<ring>& x, dual<ring>& y)
+dual<ring> pow(const dual<ring>& x, const dual<ring>& y)
 {
-	dual<ring> tmp = log(x); tmp = y * tmp;
-	return exp(tmp);
+	return exp(log(x) * y);
 }
 
 
 template <typename ring>
-dual<ring> sin(dual<ring>& x)
+dual<ring> sin(const dual<ring>& x)
 {
 	return dual<ring>(sin(x.val), cos(x.val)*x.deriv);
 }
 
 
 template <typename ring>
-dual<ring> cos(dual<ring>& x)
+dual<ring> cos(const dual<ring>& x)
 {
 	return dual<ring>(cos(x.val), (-1)*sin(x.val)*x.deriv);
 }
 
 
 template <typename ring>
-dual<ring> sqrt(dual<ring>& x)
+dual<ring> sqrt(const dual<ring>& x)
 {
 	return dual<ring>(sqrt(x.val), (0.5/sqrt(x.val))*x.deriv);
 }
