@@ -14,7 +14,8 @@ using namespace std;
 
 #define X(x) dual<ring>(x)
 /*
-[+, -, *, /] are all overloaded
+dual OP dual, dual OP ring, ring OP dual are all overloaded for OP in {+, -, *, /}
+
 const dual<ring> exp(const dual<ring>& x);
 const dual<ring> log(const dual<ring>& x);
 const dual<ring> pow(const dual<ring>& x, const dual<ring>& y);
