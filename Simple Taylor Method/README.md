@@ -49,17 +49,17 @@ Lagrange form of the remainder is used to compute a guessed error; the error is 
 ```bash
 $ ./simple_taylor
 ======================== Simple Taylor Method ========================
-Epoch 1, t = 0.628319
+Step 1, t = 0.628319
 x(t) = 0.587785  w/ err: 0
 y(t) = 0.809017  w/ err: 2.82006e-17
 
-Epoch 2, t = 1.25664
+Step 2, t = 1.25664
 x(t) = 0.951057  w/ err: 1.65759e-17
 y(t) = 0.309017  w/ err: 2.28148e-17
 
 ...
 
-Epoch 5, t = 3.14159
+Step 5, t = 3.14159
 x(t) = 8.97932e-11  w/ err: 1.65759e-17
 y(t) = -1  w/ err: 2.28148e-17
 ```
