@@ -13,10 +13,10 @@
  *****************************************************/
 
 /*
-std::vector<T> operator+(const std::vector<T>& lhs, const std::vector<T>& rhs);
-std::vector<T> operator-(const std::vector<T>& lhs, const std::vector<T>& rhs);
-std::vector<T> operator*(const std::vector<T>& lhs, const std::vector<T>& rhs);
-std::vector<T> operator*(const std::vector<T>& lhs, const T& rhs);
+const std::vector<T> operator+(const std::vector<T>& lhs, const std::vector<T>& rhs);
+const std::vector<T> operator-(const std::vector<T>& lhs, const std::vector<T>& rhs);
+const std::vector<T> operator*(const std::vector<T>& lhs, const std::vector<T>& rhs);
+const std::vector<T> operator*(const std::vector<T>& lhs, const T& rhs);
 std::ostream& operator<<(std::ostream& out, const std::vector<T>& v);
 */
 
@@ -33,7 +33,7 @@ static const char* delimiter = ", "; // used in operator<<
  * operator+ - componentwise addition of two vectors
  */
 template <typename T>
-std::vector<T> operator+(const std::vector<T>& lhs, const std::vector<T>& rhs)
+const std::vector<T> operator+(const std::vector<T>& lhs, const std::vector<T>& rhs)
 {
     assert(lhs.size() == rhs.size());
 
@@ -49,7 +49,7 @@ std::vector<T> operator+(const std::vector<T>& lhs, const std::vector<T>& rhs)
  * operator- - componentwise subtraction of two vectors
  */
 template <typename T>
-std::vector<T> operator-(const std::vector<T>& lhs, const std::vector<T>& rhs)
+const std::vector<T> operator-(const std::vector<T>& lhs, const std::vector<T>& rhs)
 {
     assert(lhs.size() == rhs.size());
 
@@ -65,7 +65,7 @@ std::vector<T> operator-(const std::vector<T>& lhs, const std::vector<T>& rhs)
  * operator* - componentwise multiplication of two vectors
  */
 template <typename T>
-std::vector<T> operator*(const std::vector<T>& lhs, const std::vector<T>& rhs)
+const std::vector<T> operator*(const std::vector<T>& lhs, const std::vector<T>& rhs)
 {
     assert(lhs.size() == rhs.size());
 
@@ -81,7 +81,7 @@ std::vector<T> operator*(const std::vector<T>& lhs, const std::vector<T>& rhs)
  * operator* - multiplication between vector<T> and T
  */
 template <typename T>
-std::vector<T> operator*(const std::vector<T>& lhs, const T& rhs)
+const std::vector<T> operator*(const std::vector<T>& lhs, const T& rhs)
 {
     std::vector<T> res;
     res.reserve(lhs.size());
@@ -92,7 +92,7 @@ std::vector<T> operator*(const std::vector<T>& lhs, const T& rhs)
 
 
 /*
- * operator<< - operator overloading for vector
+ * operator<< - operator<< for vector
  */
 template <typename T>
 std::ostream& operator<<(std::ostream& out, const std::vector<T>& v)
