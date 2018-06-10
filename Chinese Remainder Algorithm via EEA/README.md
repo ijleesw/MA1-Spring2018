@@ -18,7 +18,7 @@ For `CRT`, [_i_-th component of `m`] and [the return value of `CRT`] are congrue
 
 
 
-## Implementation
+## Implementation Details
 
 `euclidean_ring` is supposed to be a polynomial ring that has `int leading_index()` as a member function and `vector<ring> coeff` as a member variable. Also, operator overloadings should be supported for `euclidean_ring` .
 
