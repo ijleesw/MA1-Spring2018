@@ -57,7 +57,7 @@ simple_taylor(const vector< Jet<R> > (*init_cond)(const vector< Jet<R> >&),
 		v = simple_taylor_step(init_cond, curr_val, taylor_deg);
 		for (int i = 0; i < init_size; i++) {
 			curr_val[i] = v[i].eval(step_size);
-			err[i] = abs(v[i].at(taylor_deg+1)) * pow(step_size,taylor_deg+1);
+			err[i] += abs(v[i].at(taylor_deg+1)) * pow(step_size,taylor_deg+1);
 		}
 
 		if (verbose) {
