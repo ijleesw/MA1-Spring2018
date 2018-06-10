@@ -7,17 +7,17 @@ int main()
 	Zp a = 13;
 	Zp b = 15;
 
-	cout << "Welcome to the world of modulo arithmetic" << endl;
+	cout << "Welcome to the world of modulo arithmetic!" << endl;
 
 	cout << a<<"+"<<b<<"="<<a+b << endl;
 	cout << a<<"-"<<b<<"="<<a-b << endl;
 	cout << a<<"*"<<b<<"="<<a*b << endl;
 	cout << a<<"/"<<b<<"="<<a/b << endl;
 
-	cout << "("<<a<<" == "<<b<<") = "<<(a == b) << endl;
-	cout << "("<<a<<" != "<<b<<") = "<<(a != b) << endl;
+	cout << "("<<a<<"=="<<b<<")="<<(a==b) << endl;
+	cout << "("<<a<<"!="<<b<<")="<<(a!=b) << endl;
 
-	cout << Zp(12)/Zp(17) << endl;  // Assertion fails
+	cout << Zp(12)/Zp(17) << endl;  // Division by zero; assertion fails
 
 	return 0;
 }

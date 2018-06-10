@@ -2,6 +2,7 @@
 #define ZP_HPP_
 
 #define P 17
+#define isField 1
 
 #include <iostream>
 using namespace std;
@@ -17,7 +18,9 @@ public:
 	const Zp operator+(const Zp&) const;
 	const Zp operator-(const Zp&) const;
 	const Zp operator*(const Zp&) const;
+#if isField
 	const Zp operator/(const Zp&) const;
+#endif
 
 	const int operator==(const Zp&) const;
 	const int operator==(const int&) const;
@@ -56,15 +59,15 @@ const Zp Zp::operator*(const Zp& rhs) const
 	return Zp(val*rhs.val);
 }
 
+#if isField
 const Zp Zp::operator/(const Zp& rhs) const
 {
 	assert (rhs != 0);
 
 	int rhs_inv = pow((rhs.val % P + P) % P, P-2) % P;
-	assert (rhs_inv != 0);
-
 	return Zp(val*rhs_inv);
 }
+#endif
 
 const int Zp::operator==(const Zp& rhs) const
 {
