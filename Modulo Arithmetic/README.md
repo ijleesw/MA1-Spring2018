@@ -11,7 +11,7 @@ Compile and run with the following command:
 $ make
 $ ./modulo
 ```
-You can change the prime _p_ by modifying line 4 of `Zp.hpp`. _p_ doesn't have to be a prime, but operator/ will not work properly in such case. (Assertion fails at line 64 of `Zp.hpp`.)
+You can change the prime _p_ by modifying line 4 of `Zp.hpp`. _p_ doesn't have to be a prime, but `operator/` will not work properly in such case. (Assertion fails at line 64 of `Zp.hpp`.)
 
 
 
