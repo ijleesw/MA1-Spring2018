@@ -38,7 +38,7 @@ const int pow(const int& a, const int& e)
 	if (e == 0) return 1;
 	if (e & 1) return (pow(a, e-1) * a % P);
 	int tmp = pow(a, e/2);
-	return (tmp * tmp % P);
+	return tmp * tmp;
 }
 
 const Zp Zp::operator+(const Zp& rhs) const
