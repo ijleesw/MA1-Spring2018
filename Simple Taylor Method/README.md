@@ -22,8 +22,8 @@ The following is the prototype of `simple_taylor` function:
 ```c++
 const vector< Jet<R> >
 simple_taylor(const vector< Jet<R> > (*init_cond)(const vector< Jet<R> >&),
-              const vector<R> init_val, const int taylor_deg,
-              const R Point, const int steps, const bool verbose=false)
+              const vector<R>& init_val, const int& taylor_deg,
+              const R& Point, const int& steps, const bool& verbose=false)
 ```
 
 \- `*init_cond` is a function pointer of the given initial condition. `my_init_cond` in `main.cpp` is set to _v[0] = sin(x)_ and _v[1] = cos(x)_.

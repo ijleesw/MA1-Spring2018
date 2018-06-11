@@ -36,10 +36,10 @@ public:
 
 	void init(void);
 
-	R& at(const int i);
+	R& at(const int&);
 	const int length(void) const;
 
-	const R eval(const R x) const;
+	const R eval(const R&) const;
 	
 	const Jet operator+(const Jet&) const;
 	const Jet operator-(const Jet&) const;
@@ -65,7 +65,7 @@ void Jet<R>::init(void)
 
 
 template <typename R>
-R& Jet<R>::at(int i)
+R& Jet<R>::at(const int& i)
 {
 	assert(i >= 0 && i < elt.size());
 	return elt[i];
@@ -80,7 +80,7 @@ const int Jet<R>::length(void) const
 
 
 template <typename R>
-const R Jet<R>::eval(const R x) const
+const R Jet<R>::eval(const R& x) const
 {
 	int size = elt.size();
 	R res = elt[0];

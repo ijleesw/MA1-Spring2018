@@ -16,7 +16,7 @@ using namespace std;
 template <typename R>
 const vector< Jet<R> >
 simple_taylor_step(const vector< Jet<R> > (*init_cond)(const vector< Jet<R> >&),
-                   const vector<R> curr_val, const int taylor_deg)
+                   const vector<R>& curr_val, const int& taylor_deg)
 {
 	int k = 0;
 	int init_size = curr_val.size();
@@ -42,12 +42,13 @@ simple_taylor_step(const vector< Jet<R> > (*init_cond)(const vector< Jet<R> >&),
 template <typename R>
 const vector< Jet<R> >
 simple_taylor(const vector< Jet<R> > (*init_cond)(const vector< Jet<R> >&),
-              const vector<R> init_val, const int taylor_deg,
-              const R Point, const int steps, const bool verbose=false)
+              const vector<R>& init_val, const int& taylor_deg,
+              const R& Point, const int& steps, const bool& verbose=false)
 {
 	int curr_step = 0;
 	R step_size = Point/steps;
 	int init_size = init_val.size();
+
 	vector<R> curr_val = init_val;
 	vector<R> err(init_size, 0);
 	vector< Jet<R> > v(init_size, JET_INIT(taylor_deg+2));
