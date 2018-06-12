@@ -12,6 +12,9 @@ $ g++ -std=c++11 -o multivariate main.cpp -lgmp -lgmpxx
 $ ./multivariate
 ```
 
+You need [GMP library](https://gmplib.org/manual/index.html#Top) to compile `main.cpp`.
+
+
 
 ## 2. Description
 
